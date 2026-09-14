@@ -74,7 +74,7 @@ npm run preview
 ## 3. Идентификатор коммита сдачи
 Коммит фиксации результатов первого этапа:
 ```
-5172994 Lab 1: create React TypeScript app
+1d9b82d Lab 1: create React TypeScript app
 ```
 Команда для просмотра:
 ```bash
