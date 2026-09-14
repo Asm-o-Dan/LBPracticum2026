@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Шпаргалка: React 19 + TypeScript + Vite</title>
+  <style>
+    :root {
+      --primary: #2563eb;
+      --text: #0f172a;
+      --bg: #ffffff;
+      --card-bg: #f8fafc;
+      --border: #e2e8f0;
+      --code-bg: #0f172a;
+      --code-text: #f8fafc;
+    }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      color: var(--text);
+      background: var(--bg);
+      line-height: 1.5;
+      padding: 32px 20px;
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    header {
+      border-bottom: 2px solid var(--primary);
+      padding-bottom: 16px;
+      margin-bottom: 24px;
+    }
+    h1 {
+      margin: 0 0 8px;
+      font-size: 28px;
+      color: var(--text);
+    }
+    .badge {
+      display: inline-block;
+      background: #dbeafe;
+      color: #1e40af;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+    }
+    .card h3 {
+      margin-top: 0;
+      color: var(--primary);
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 8px;
+    }
+    pre {
+      background: var(--code-bg);
+      color: var(--code-text);
+      padding: 12px;
+      border-radius: 6px;
+      overflow-x: auto;
+      font-size: 13px;
+      line-height: 1.4;
+    }
+    code {
+      font-family: Consolas, Monaco, "Courier New", monospace;
+    }
+    .tag {
+      font-size: 11px;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-weight: 600;
+      background: #e2e8f0;
+      color: #334155;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0;
+    }
+    th, td {
+      border: 1px solid var(--border);
+      padding: 8px 12px;
+      text-align: left;
+      font-size: 14px;
+    }
+    th {
+      background: #f1f5f9;
+    }
+    @media print {
+      body { padding: 0; }
+      .card { break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <span class="badge">StudyFlow • Reference Card</span>
+      <h1>Справочник: React + TypeScript + Vite</h1>
+      <p>Ключевая анатомия проекта, команды сборщика и типовые паттерны типизации.</p>
+    </header>
+
+    <div class="grid">
+      <div class="card">
+        <h3>1. Команды проекта</h3>
+        <p><span class="tag">CLI</span> Ежедневный цикл разработки:</p>
+        <pre><code># Запуск dev-сервера (HMR на 5173)
+npm run dev
+
+# Проверка типов + сборка в dist
+npm run build
+
+# Локальный preview готового dist
+npm run preview
+
+# Строгая установка из lock-файла
+npm ci</code></pre>
+      </div>
+
+      <div class="card">
+        <h3>2. Цепочка монтирования</h3>
+        <p><span class="tag">DOM &rarr; React</span> От HTML до компонента:</p>
+        <pre><code>index.html:
+&lt;div id="root"&gt;&lt;/div&gt;
+&lt;script type="module" src="/src/main.tsx"&gt;&lt;/script&gt;
+
+main.tsx:
+createRoot(document.getElementById('root')!)
+  .render(&lt;StrictMode&gt;&lt;App /&gt;&lt;/StrictMode&gt;)
+
+App.tsx:
+export default function App() { ... }</code></pre>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>3. Различия режимов запуска</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Режим</th>
+            <th>Команда</th>
+            <th>Механизм</th>
+            <th>Назначение</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Dev</strong></td>
+            <td><code>npm run dev</code></td>
+            <td>Нативные ES-модули, Fast Refresh HMR без бандлинга</td>
+            <td>Разработка с мгновенным откликом</td>
+          </tr>
+          <tr>
+            <td><strong>Build</strong></td>
+            <td><code>npm run build</code></td>
+            <td><code>tsc -b</code> (проверка типов) + Rollup (минификация, бандлинг в <code>dist/</code>)</td>
+            <td>Подготовка к релизу и проверке</td>
+          </tr>
+          <tr>
+            <td><strong>Preview</strong></td>
+            <td><code>npm run preview</code></td>
+            <td>Статический веб-сервер над папкой <code>dist/</code></td>
+            <td>Проверка итоговой сборки перед деплоем</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card" style="margin-top: 16px;">
+      <h3>4. Правила чистоты Git</h3>
+      <p>В репозиторий включаются только декларации и исходники: <code>package.json</code>, <code>package-lock.json</code>, <code>.node-version</code>, исходный код и документация. Директории <code>node_modules/</code> и <code>dist/</code> всегда исключаются через <code>.gitignore</code>, так как являются генерируемыми артефактами.</p>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Урок 1: Жизненный цикл React 19 + TypeScript + Vite</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 40px 20px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Georgia, serif;
+      background: #fafaf9;
+      color: #1c1917;
+      line-height: 1.6;
+    }
+    .wrapper {
+      max-width: 760px;
+      margin: 0 auto;
+      background: #ffffff;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+      border: 1px solid #e7e5e4;
+    }
+    header {
+      border-bottom: 2px solid #0284c7;
+      padding-bottom: 20px;
+      margin-bottom: 30px;
+    }
+    .lesson-meta {
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #0284c7;
+      font-weight: 700;
+    }
+    h1 {
+      font-size: 30px;
+      margin: 8px 0;
+      color: #0c0a09;
+    }
+    h2 {
+      font-size: 20px;
+      margin-top: 32px;
+      color: #0f172a;
+      border-bottom: 1px solid #f1f5f9;
+      padding-bottom: 6px;
+    }
+    p, li {
+      font-size: 16px;
+      color: #334155;
+    }
+    .diagram-box {
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 20px;
+      margin: 20px 0;
+      text-align: center;
+    }
+    .flow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .flow-node {
+      background: #ffffff;
+      border: 2px solid #0284c7;
+      padding: 10px 16px;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 14px;
+    }
+    .flow-arrow {
+      font-size: 20px;
+      color: #64748b;
+    }
+    .callout {
+      background: #eff6ff;
+      border-left: 4px solid #2563eb;
+      padding: 14px 18px;
+      margin: 20px 0;
+      border-radius: 0 8px 8px 0;
+      font-size: 15px;
+    }
+    .quiz-section {
+      background: #fdf4ff;
+      border: 1px solid #f0abfc;
+      border-radius: 8px;
+      padding: 24px;
+      margin-top: 36px;
+    }
+    .quiz-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #86198f;
+      margin-top: 0;
+    }
+    .option-btn {
+      display: block;
+      width: 100%;
+      text-align: left;
+      background: #ffffff;
+      border: 1px solid #d946ef;
+      padding: 12px 16px;
+      margin: 8px 0;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 15px;
+      transition: background 0.15s;
+    }
+    .option-btn:hover {
+      background: #fae8ff;
+    }
+    .quiz-feedback {
+      margin-top: 14px;
+      padding: 12px;
+      border-radius: 6px;
+      display: none;
+      font-size: 15px;
+      font-weight: 500;
+    }
+    .source-box {
+      margin-top: 36px;
+      padding: 16px;
+      background: #f1f5f9;
+      border-radius: 8px;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <header>
+      <div class="lesson-meta">StudyFlow • Урок 0001</div>
+      <h1>Жизненный цикл входа в React и сборка Vite</h1>
+      <p>Как статический HTML превращается в интерактивный интерфейс через связку main.tsx и App.tsx.</p>
+    </header>
+
+    <section>
+      <h2>1. Архитектурная цепочка монтирования</h2>
+      <p>Браузер ничего не знает о JSX или TypeScript. Он запрашивает <code>index.html</code>, в котором находится пустой контейнер <code>&lt;div id="root"&gt;&lt;/div&gt;</code> и директива подключения модуля <code>main.tsx</code>.</p>
+      
+      <div class="diagram-box">
+        <div class="flow">
+          <div class="flow-node">index.html<br><small>&lt;div id="root"&gt;</small></div>
+          <span class="flow-arrow">&rarr;</span>
+          <div class="flow-node">main.tsx<br><small>createRoot(...).render</small></div>
+          <span class="flow-arrow">&rarr;</span>
+          <div class="flow-node">App.tsx<br><small>компонент с JSX</small></div>
+        </div>
+      </div>
+
+      <p>Функция <code>createRoot</code> берет ссылку на элемент DOM, инициализирует внутреннее дерево компонентов React (Virtual DOM) и монтирует туда компонент <code>&lt;App /&gt;</code>.</p>
+    </section>
+
+    <section>
+      <h2>2. Роль TypeScript и сборки</h2>
+      <div class="callout">
+        <strong>Ключевой инсайт:</strong> В браузере работает обычный JavaScript. TypeScript проверяет типы <em>до того</em>, как код попадет в браузер. Скрипт сборки <code>"build": "tsc -b &amp;&amp; vite build"</code> сначала запускает компилятор <code>tsc</code>, и если обнаружена хотя бы одна ошибка типов, сборка немедленно останавливается с ненулевым кодом выхода.
+      </div>
+    </section>
+
+    <section class="quiz-section">
+      <div class="quiz-title">🧠 Активное припоминание: Проверка понимания</div>
+      <p>Что произойдет, если в переменной компонента допущена ошибка типов, и запустить <code>npm run build</code>?</p>
+      
+      <button class="option-btn" onclick="checkAnswer(1)">А) Vite проигнорирует ошибку и соберет проект в папку dist</button>
+      <button class="option-btn" onclick="checkAnswer(2)">Б) Компилятор tsc завершит процесс с ошибкой до запуска vite</button>
+      <button class="option-btn" onclick="checkAnswer(3)">В) Ошибка возникнет только в браузере при открытии страницы</button>
+
+      <div id="quiz-feedback" class="quiz-feedback"></div>
+    </section>
+
+    <div class="source-box">
+      <strong>Рекомендованный первоисточник:</strong><br>
+      <a href="https://react.dev/learn/describing-the-ui" target="_blank" rel="noreferrer">React Docs — Describing the UI</a><br>
+      <em>Совет: при возникновении любых вопросов по коду или теории обращайтесь к вашему учебному ассистенту Antigravity в чате.</em>
+    </div>
+  </div>
+
+  <script>
+    function checkAnswer(choice) {
+      const fb = document.getElementById('quiz-feedback');
+      fb.style.display = 'block';
+      if (choice === 2) {
+        fb.style.background = '#dcfce7';
+        fb.style.color = '#15803d';
+        fb.style.border = '1px solid #86efac';
+        fb.innerHTML = '✅ <strong>Верно!</strong> Так как в package.json прописано "tsc -b && vite build", оператор && прекращает выполнение при ошибке tsc, и папка dist не собирается.';
+      } else {
+        fb.style.background = '#fee2e2';
+        fb.style.color = '#b91c1c';
+        fb.style.border = '1px solid #fca5a5';
+        fb.innerHTML = '❌ <strong>Неверно.</strong> Оператор && в команде сборки сначала выполняет проверку tsc. При несоответствии типов сборка падает с exit code 1, не доходя до генерации бандла.';
+      }
+    }
+  </script>
+</body>
+</html>
