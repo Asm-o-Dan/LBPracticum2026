@@ -1,16 +1,16 @@
+/* Базовый контейнер приложения */
 .app {
   max-width: 960px;
   margin: 0 auto;
   padding: 32px 20px;
+  box-sizing: border-box;
 }
 
-.app section {
-  margin-top: 32px;
-}
-
+/* Шапка приложения */
 .app-header {
   border-bottom: 1px solid #e2e8f0;
-  padding-bottom: 24px;
+  padding-bottom: 20px;
+  margin-bottom: 28px;
 }
 
 .header-meta {
@@ -41,46 +41,384 @@
 }
 
 .app-title {
-  margin: 0 0 8px;
-  font-size: 32px;
+  margin: 0 0 6px;
+  font-size: 28px;
   font-weight: 700;
   color: #0f172a;
   line-height: 1.2;
 }
 
 .app-description {
-  margin: 0;
-  font-size: 16px;
-  color: #475569;
+  margin: 0 0 16px;
+  font-size: 15px;
+  color: #64748b;
   line-height: 1.5;
 }
 
-.section-header {
+/* Навигация приложения */
+.app-nav {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
   flex-wrap: wrap;
-  gap: 12px;
-  margin-bottom: 16px;
+  gap: 10px;
 }
 
-.section-title {
+.nav-link {
+  display: inline-block;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #475569;
+  text-decoration: none;
+  background-color: #f8fafc;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  transition: all 0.15s ease-in-out;
+}
+
+.nav-link:hover {
+  background-color: #f1f5f9;
+  color: #0f172a;
+  border-color: #94a3b8;
+}
+
+/* Активная ссылка навигации */
+nav a.active,
+.nav-link.active {
+  background-color: #0284c7;
+  color: #ffffff;
+  border-color: #0284c7;
+  font-weight: 600;
+}
+
+nav a.active:hover,
+.nav-link.active:hover {
+  background-color: #0369a1;
+  border-color: #0369a1;
+  color: #ffffff;
+}
+
+/* Доступность фокуса клавиатуры (Tab) */
+a:focus-visible,
+button:focus-visible,
+.button:focus-visible {
+  outline: 2px solid #0284c7;
+  outline-offset: 3px;
+}
+
+/* Основное содержимое страницы */
+.app-main {
+  min-height: 400px;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.page-title {
+  margin: 0 0 6px;
+  font-size: 24px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.page-subtitle {
   margin: 0;
-  font-size: 22px;
-  font-weight: 600;
-  color: #1e293b;
+  font-size: 14px;
+  color: #64748b;
 }
 
-.status-badge {
-  font-size: 12px;
+.page-description {
+  font-size: 16px;
+  color: #475569;
+  line-height: 1.5;
+  margin: 12px 0 20px;
+}
+
+/* Кнопки и ссылки действий */
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 16px;
+  font-size: 14px;
   font-weight: 600;
+  border-radius: 8px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.15s ease-in-out;
+}
+
+.button-primary {
+  background-color: #0284c7;
+  color: #ffffff;
+  border: 1px solid #0284c7;
+}
+
+.button-primary:hover {
+  background-color: #0369a1;
+  border-color: #0369a1;
+}
+
+.button-outline {
+  background-color: #ffffff;
+  color: #0284c7;
+  border: 1px solid #0284c7;
+}
+
+.button-outline:hover {
+  background-color: #f0f9ff;
+}
+
+/* Сетка карточек задач */
+.task-list {
+  display: grid;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+@media (min-width: 760px) {
+  .task-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* Карточка задачи */
+.task-card {
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 20px;
+  background-color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  overflow-wrap: anywhere;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+.task-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  border-color: #cbd5e1;
+}
+
+.task-card-header {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.task-card-title {
+  margin: 4px 0 0;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.task-card-title a {
+  color: #0f172a;
+  text-decoration: none;
+}
+
+.task-card-title a:hover {
+  color: #0284c7;
+  text-decoration: underline;
+}
+
+.task-card-course {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: #0284c7;
+}
+
+.task-card-desc {
+  margin: 0;
+  font-size: 14px;
+  color: #475569;
+  line-height: 1.5;
+  flex-grow: 1;
+}
+
+.task-card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+  padding-top: 10px;
+  border-top: 1px solid #f1f5f9;
+  font-size: 13px;
+}
+
+.task-due-date {
+  color: #64748b;
+  font-weight: 500;
+}
+
+.task-tag {
+  background-color: #f1f5f9;
+  color: #475569;
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+/* Бейджи статусов */
+.status-tag {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 6px;
+  letter-spacing: 0.02em;
+}
+
+.status-todo {
   background-color: #fef3c7;
   color: #92400e;
-  padding: 4px 10px;
-  border-radius: 9999px;
   border: 1px solid #fde68a;
 }
 
+.status-in_progress {
+  background-color: #e0f2fe;
+  color: #0369a1;
+  border: 1px solid #bae6fd;
+}
+
+.status-done {
+  background-color: #dcfce7;
+  color: #15803d;
+  border: 1px solid #bbf7d0;
+}
+
+/* Бейджи приоритетов */
+.priority-tag {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 6px;
+}
+
+.priority-high {
+  background-color: #fee2e2;
+  color: #b91c1c;
+  border: 1px solid #fecaca;
+}
+
+.priority-medium {
+  background-color: #ffedd5;
+  color: #c2410c;
+  border: 1px solid #fed7aa;
+}
+
+.priority-low {
+  background-color: #f1f5f9;
+  color: #64748b;
+  border: 1px solid #e2e8f0;
+}
+
+/* Страница подробностей задачи */
+.details-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 28px;
+  overflow-wrap: anywhere;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.details-header {
+  border-bottom: 1px solid #f1f5f9;
+  padding-bottom: 20px;
+  margin-bottom: 20px;
+}
+
+.details-meta-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.details-title {
+  margin: 0 0 8px;
+  font-size: 26px;
+  font-weight: 700;
+  color: #0f172a;
+  line-height: 1.3;
+}
+
+.details-course {
+  margin: 0;
+  font-size: 15px;
+  color: #475569;
+}
+
+.details-body {
+  margin-bottom: 24px;
+}
+
+.details-section-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1e293b;
+  margin: 0 0 8px;
+}
+
+.details-description {
+  font-size: 15px;
+  line-height: 1.6;
+  color: #334155;
+  margin: 0 0 20px;
+}
+
+.details-info-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 16px;
+}
+
+@media (min-width: 600px) {
+  .details-info-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.info-label {
+  font-size: 12px;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.info-value {
+  font-size: 14px;
+  color: #0f172a;
+  font-weight: 600;
+}
+
+.details-actions,
+.section-actions {
+  margin-top: 24px;
+}
+
+/* Заглушка пустого списка */
 .empty-state {
   border: 2px dashed #cbd5e1;
   border-radius: 12px;
@@ -102,4 +440,41 @@
   font-size: 14px;
   color: #64748b;
   line-height: 1.6;
+}
+
+/* Заглушка создания и информационные блоки */
+.page-section {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 28px;
+}
+
+.info-placeholder {
+  border-left: 4px solid #0284c7;
+  background-color: #f0f9ff;
+  padding: 16px 20px;
+  border-radius: 0 8px 8px 0;
+  margin: 20px 0;
+}
+
+.placeholder-primary {
+  margin: 0 0 8px;
+  font-size: 15px;
+  color: #0c4a6e;
+  line-height: 1.5;
+}
+
+.placeholder-secondary {
+  margin: 0;
+  font-size: 13px;
+  color: #0369a1;
+  line-height: 1.5;
+}
+
+/* Страница 404 */
+.not-found-card,
+.not-found-page {
+  border: 1px dashed #ef4444;
+  background-color: #fffaf0;
 }
