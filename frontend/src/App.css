@@ -415,7 +415,13 @@ button:focus-visible,
 
 .details-actions,
 .section-actions {
-  margin-top: 24px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-top: 28px;
+  padding-top: 20px;
+  border-top: 1px solid #f1f5f9;
 }
 
 /* Заглушка пустого списка */
