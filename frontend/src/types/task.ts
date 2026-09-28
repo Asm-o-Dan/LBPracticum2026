@@ -12,3 +12,5 @@ export type Task = {
   course: string
   tag: string
 }
+
+export type TaskDraft = Omit<Task, 'id'>

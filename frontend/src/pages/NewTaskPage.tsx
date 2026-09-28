@@ -1,22 +1,42 @@
-import { Link } from 'react-router'
+import { useNavigate } from 'react-router'
+import { TaskForm } from '../components/TaskForm'
+import type { TaskDraft } from '../types/task'
 
-export function NewTaskPage() {
+type NewTaskPageProps = {
+  onCreate: (draft: TaskDraft) => string
+}
+
+const emptyTask: TaskDraft = {
+  title: '',
+  description: '',
+  status: 'todo',
+  dueDate: '',
+  priority: 'medium',
+  course: '',
+  tag: '',
+}
+
+export function NewTaskPage({ onCreate }: NewTaskPageProps) {
+  const navigate = useNavigate()
+
+  function handleSave(draft: TaskDraft) {
+    const id = onCreate(draft)
+    navigate(`/tasks/${id}`)
+  }
+
   return (
     <section className="page-section">
-      <h1 className="page-title">Создание задачи</h1>
-      <div className="info-placeholder">
-        <p className="placeholder-primary">
-          Интерактивная форма добавления и валидации учебных задач будет разработана в рамках <strong>Лабораторной работы №3</strong>.
-        </p>
-        <p className="placeholder-secondary">
-          На текущем этапе (ЛР 2) данные задач берутся из предварительно типизированного массива, поэтому кнопка сохранения пока не добавляется во избежание имитации неработающего функционала.
-        </p>
+      <div className="page-header">
+        <div>
+          <h1 className="page-title">Создание задачи</h1>
+          <p className="page-subtitle">Добавьте новую учебную работу в список семестра</p>
+        </div>
       </div>
-      <div className="section-actions">
-        <Link to="/tasks" className="button button-outline">
-          ← Вернуться к списку задач
-        </Link>
-      </div>
+      <TaskForm
+        initialValues={emptyTask}
+        onSave={handleSave}
+        onCancel={() => navigate('/tasks')}
+      />
     </section>
   )
 }

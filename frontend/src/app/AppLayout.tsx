@@ -27,6 +27,9 @@ export function AppLayout() {
             Создать задачу
           </NavLink>
         </nav>
+        <div className="session-warning" role="status">
+          ℹ️ <strong>Режим сеанса (ЛР 3):</strong> Данные сохраняются в памяти приложения до перезагрузки страницы (F5).
+        </div>
       </header>
       <main className="app-main">
         <Outlet />
