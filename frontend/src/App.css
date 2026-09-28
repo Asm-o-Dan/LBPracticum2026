@@ -514,58 +514,17 @@ button:focus-visible,
   font-size: 13px;
 }
 
-/* Строка управления фильтрами и файлами */
-.controls-row {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  margin-bottom: 20px;
-}
-
-@media (min-width: 760px) {
-  .controls-row {
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-  }
-}
-
+/* Панель локального фильтра */
 .filter-bar {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
   gap: 12px;
-  padding: 12px 16px;
+  margin-bottom: 20px;
+  padding: 14px 18px;
   background-color: #f8fafc;
   border: 1px solid #e2e8f0;
   border-radius: 10px;
-}
-
-.file-actions-bar {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.file-alert {
-  padding: 10px 14px;
-  border-radius: 8px;
-  font-size: 13px;
-  margin-bottom: 16px;
-  line-height: 1.4;
-}
-
-.file-alert-success {
-  background-color: #f0fdf4;
-  border: 1px solid #bbf7d0;
-  color: #166534;
-}
-
-.file-alert-error {
-  background-color: #fef2f2;
-  border: 1px solid #fecaca;
-  color: #991b1b;
 }
 
 .filter-label {
@@ -666,4 +625,63 @@ button:focus-visible,
   font-size: 14px;
   line-height: 1.4;
 }
+
+/* Карточка демонстрации хранения в файле на диске */
+.storage-demo-card {
+  background-color: #f8fafc;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  padding: 16px 20px;
+  margin-bottom: 20px;
+}
+
+.storage-demo-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.storage-demo-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.storage-demo-text {
+  margin: 0 0 14px;
+  font-size: 13px;
+  color: #475569;
+  line-height: 1.5;
+}
+
+.storage-demo-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.button-storage {
+  background-color: #ffffff;
+  color: #0f172a;
+  border: 1px solid #94a3b8;
+  font-size: 13px;
+  padding: 7px 14px;
+}
+
+.button-storage:hover {
+  background-color: #f1f5f9;
+  border-color: #64748b;
+}
+
+.storage-status-message {
+  margin: 12px 0 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: #0369a1;
+  background-color: #e0f2fe;
+  padding: 8px 12px;
+  border-radius: 6px;
+}
+
 

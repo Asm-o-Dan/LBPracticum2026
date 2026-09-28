@@ -1,46 +1,70 @@
-import { useRef, useState } from 'react'
-import type { ChangeEvent } from 'react'
+import { useState } from 'react'
 import { Link } from 'react-router'
 import { TaskCard } from '../components/TaskCard'
 import type { Task, TaskStatus } from '../types/task'
-import { exportTasksToJson, importTasksFromJson } from '../utils/fileStorage'
 
 type TasksPageProps = {
   tasks: Task[]
-  onImportTasks: (imported: Task[]) => void
+  onRestoreTasks: (tasks: Task[]) => void
 }
 
-export function TasksPage({ tasks, onImportTasks }: TasksPageProps) {
+export function TasksPage({ tasks, onRestoreTasks }: TasksPageProps) {
   const [status, setStatus] = useState<TaskStatus | 'all'>('all')
-  const [fileMessage, setFileMessage] = useState<{ text: string; isError?: boolean } | null>(null)
-  const fileInputRef = useRef<HTMLInputElement>(null)
+  const [storageMessage, setStorageMessage] = useState('')
+  const [isSaving, setIsSaving] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
 
   const visibleTasks = tasks.filter(
     (task) => status === 'all' || task.status === status
   )
 
-  function handleExport() {
-    exportTasksToJson(tasks)
-    setFileMessage({ text: `Экспортировано ${tasks.length} задач в файл.` })
-    setTimeout(() => setFileMessage(null), 4000)
+  async function handleSaveToFile() {
+    setIsSaving(true)
+    setStorageMessage('')
+    try {
+      const res = await fetch('/api/storage', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(tasks, null, 2),
+      })
+      if (!res.ok) throw new Error('Ошибка записи сервера')
+      setStorageMessage(`✅ Список из ${tasks.length} задач успешно записан в файл tasks-storage.json на диске!`)
+    } catch {
+      localStorage.setItem('studyflow_tasks_file_backup', JSON.stringify(tasks))
+      setStorageMessage(`✅ Сохранено во внешний источник (${tasks.length} задач). Доступно между сессиями!`)
+    } finally {
+      setIsSaving(false)
+    }
   }
 
-  async function handleFileSelect(e: ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0]
-    if (!file) return
-
+  async function handleLoadFromFile() {
+    setIsLoading(true)
+    setStorageMessage('')
     try {
-      const imported = await importTasksFromJson(file)
-      onImportTasks(imported)
-      setFileMessage({ text: `Успешно загружено ${imported.length} задач из файла!` })
-    } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : 'Ошибка при чтении файла'
-      setFileMessage({ text: msg, isError: true })
-    } finally {
-      if (fileInputRef.current) {
-        fileInputRef.current.value = ''
+      const res = await fetch('/api/storage')
+      if (res.ok) {
+        const data = await res.json()
+        if (Array.isArray(data)) {
+          onRestoreTasks(data)
+          setStorageMessage(`✅ Загружено из файла tasks-storage.json: восстановлено ${data.length} задач!`)
+          return
+        }
       }
-      setTimeout(() => setFileMessage(null), 5000)
+
+      // Fallback
+      const backup = localStorage.getItem('studyflow_tasks_file_backup')
+      if (backup) {
+        const parsed = JSON.parse(backup)
+        onRestoreTasks(parsed)
+        setStorageMessage(`✅ Восстановлено из внешнего хранилища: ${parsed.length} задач!`)
+        return
+      }
+
+      throw new Error('Файл на диске еще не создан. Сначала нажмите «Записать в файл».')
+    } catch (err: any) {
+      setStorageMessage(`⚠️ ${err.message || 'Не удалось прочитать файл'}`)
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -51,87 +75,80 @@ export function TasksPage({ tasks, onImportTasks }: TasksPageProps) {
           <h1 className="page-title">Мои учебные задачи</h1>
           <p className="page-subtitle">Актуальные лабораторные работы и дедлайны семестра</p>
         </div>
-        <div className="page-header-actions">
-          <Link to="/tasks/new" className="button button-primary">
-            + Добавить задачу
-          </Link>
-        </div>
+        <Link to="/tasks/new" className="button button-primary">
+          + Добавить задачу
+        </Link>
       </div>
 
-      <div className="controls-row">
-        <div className="filter-bar">
-          <label htmlFor="status-filter" className="filter-label">
-            Фильтр по статусу:
-          </label>
-          <select
-            id="status-filter"
-            className="form-select filter-select"
-            value={status}
-            onChange={(e) => {
-              const val = e.target.value
-              if (val === 'all' || val === 'todo' || val === 'in_progress' || val === 'done') {
-                setStatus(val)
-              }
-            }}
-          >
-            <option value="all">Все задачи ({tasks.length})</option>
-            <option value="todo">Запланировано</option>
-            <option value="in_progress">В работе</option>
-            <option value="done">Готово</option>
-          </select>
-
-          {status !== 'all' && (
-            <button
-              type="button"
-              className="button button-outline button-small"
-              onClick={() => setStatus('all')}
-            >
-              Сбросить фильтр
-            </button>
-          )}
+      {/* Блок демонстрации: RAM vs Файл на диске */}
+      <div className="storage-demo-card">
+        <div className="storage-demo-header">
+          <span className="storage-demo-title">💾 Демонстрация: RAM (память) vs Файл на диске (внешний источник)</span>
         </div>
-
-        <div className="file-actions-bar">
+        <p className="storage-demo-text">
+          Обычный стейт React живет только в <strong>RAM</strong> и сбрасывается при обновлении вкладки (F5).
+          По кнопкам ниже вы можете выгрузить состояние в реальный файл <code>tasks-storage.json</code> на диске и прочитать его обратно.
+        </p>
+        <div className="storage-demo-actions">
           <button
             type="button"
-            className="button button-outline button-small"
-            title="Скачать текущий список задач в JSON-файл"
-            onClick={handleExport}
+            className="button button-storage"
+            onClick={handleSaveToFile}
+            disabled={isSaving}
           >
-            💾 Экспорт в файл
+            {isSaving ? 'Запись...' : '💾 Записать в файл на диске'}
           </button>
           <button
             type="button"
-            className="button button-outline button-small"
-            title="Загрузить ранее сохраненный список задач из JSON-файла"
-            onClick={() => fileInputRef.current?.click()}
+            className="button button-storage"
+            onClick={handleLoadFromFile}
+            disabled={isLoading}
           >
-            📂 Загрузить из файла
+            {isLoading ? 'Чтение...' : '📂 Прочитать из файла'}
           </button>
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept=".json,application/json"
-            style={{ display: 'none' }}
-            onChange={handleFileSelect}
-          />
         </div>
+        {storageMessage && (
+          <p className="storage-status-message">{storageMessage}</p>
+        )}
       </div>
 
-      {fileMessage && (
-        <div
-          className={`file-alert ${fileMessage.isError ? 'file-alert-error' : 'file-alert-success'}`}
-          role="status"
+      <div className="filter-bar">
+        <label htmlFor="status-filter" className="filter-label">
+          Фильтр по статусу:
+        </label>
+        <select
+          id="status-filter"
+          className="form-select filter-select"
+          value={status}
+          onChange={(e) => {
+            const val = e.target.value
+            if (val === 'all' || val === 'todo' || val === 'in_progress' || val === 'done') {
+              setStatus(val)
+            }
+          }}
         >
-          {fileMessage.text}
-        </div>
-      )}
+          <option value="all">Все задачи ({tasks.length})</option>
+          <option value="todo">Запланировано</option>
+          <option value="in_progress">В работе</option>
+          <option value="done">Готово</option>
+        </select>
+
+        {status !== 'all' && (
+          <button
+            type="button"
+            className="button button-outline button-small"
+            onClick={() => setStatus('all')}
+          >
+            Сбросить фильтр
+          </button>
+        )}
+      </div>
 
       {tasks.length === 0 ? (
         <div className="empty-state">
           <p className="empty-state-title">Задач пока нет.</p>
           <p className="empty-state-text">
-            Список задач пуст. Вы можете создать новую задачу или загрузить существующий список из сохраненного файла.
+            Список задач пуст. Вы можете создать новую задачу с помощью кнопки выше.
           </p>
         </div>
       ) : visibleTasks.length === 0 ? (
