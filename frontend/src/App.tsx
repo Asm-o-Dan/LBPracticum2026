@@ -37,7 +37,15 @@ export default function App() {
     <Routes>
       <Route element={<AppLayout />}>
         <Route index element={<Navigate to="/tasks" replace />} />
-        <Route path="tasks" element={<TasksPage tasks={tasks} />} />
+        <Route
+          path="tasks"
+          element={
+            <TasksPage
+              tasks={tasks}
+              onImportTasks={(imported) => setTasks(imported)}
+            />
+          }
+        />
         <Route
           path="tasks/new"
           element={<NewTaskPage onCreate={createTask} />}
