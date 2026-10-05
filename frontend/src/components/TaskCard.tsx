@@ -35,7 +35,7 @@ export function TaskCard({ task }: TaskCardProps) {
       <p className="task-card-desc">{task.description}</p>
       <div className="task-card-footer">
         <span className="task-due-date">Срок: {task.dueDate}</span>
-        <span className="task-tag">{task.tag}</span>
+        <span className="task-tag">Тег: {task.tag}</span>
       </div>
     </article>
   )

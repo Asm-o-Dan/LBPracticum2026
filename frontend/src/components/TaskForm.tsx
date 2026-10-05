@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import type { FormEvent } from 'react'
+import { useTags } from '../hooks/useTags'
 import type { TaskDraft, TaskPriority, TaskStatus } from '../types/task'
 
 type TaskFormProps = {
@@ -12,10 +13,21 @@ export function TaskForm(props: TaskFormProps) {
   const [draft, setDraft] = useState<TaskDraft>(() => ({ ...props.initialValues }))
   const [error, setError] = useState('')
 
+  const { load, retry } = useTags()
+  const tags = load.status === 'success' ? load.data : []
+  const selectedTagExists = tags.some((tag) => tag.id === draft.tag)
+  const canSave = load.status === 'success' && selectedTagExists
+
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
-    const title = draft.title.trim()
 
+    // Шаг 9: Защита сохранения
+    if (!canSave) {
+      setError('Дождитесь справочника и выберите доступный тег.')
+      return
+    }
+
+    const title = draft.title.trim()
     if (title.length < 3 || title.length > 100) {
       setError('Название должно содержать от 3 до 100 символов.')
       return
@@ -26,7 +38,7 @@ export function TaskForm(props: TaskFormProps) {
       return
     }
 
-    // Предметное правило (Шаг 6 методички):
+    // Предметное правило (Шаг 6 ЛР 3):
     // Завершённая задача должна иметь непустое описание результата сдачи
     if (draft.status === 'done' && !draft.description.trim()) {
       setError('Завершённая задача должна иметь непустое описание результата.')
@@ -54,7 +66,7 @@ export function TaskForm(props: TaskFormProps) {
           className="form-input"
           value={draft.title}
           required
-          placeholder="Например: Лабораторная работа 3"
+          placeholder="Например: Лабораторная работа 4"
           onChange={(e) => setDraft({ ...draft, title: e.target.value })}
         />
       </div>
@@ -133,21 +145,84 @@ export function TaskForm(props: TaskFormProps) {
 
         <div className="form-group">
           <label htmlFor="task-tag" className="form-label">
-            Категория / Тег
+            Категория / Тег <span className="required-star">*</span>
           </label>
-          <input
+          <select
             id="task-tag"
-            className="form-input"
+            className="form-select"
             value={draft.tag}
-            placeholder="Лабораторная, Практика..."
-            onChange={(e) => setDraft({ ...draft, tag: e.target.value })}
-          />
+            required
+            disabled={load.status !== 'success' || tags.length === 0}
+            onChange={(event) =>
+              setDraft({
+                ...draft,
+                tag: event.target.value,
+              })
+            }
+          >
+            <option value="">Выберите тег</option>
+            {draft.tag !== '' && !selectedTagExists && (
+              <option value={draft.tag} disabled>
+                Текущий код: {draft.tag} — выберите доступный тег
+              </option>
+            )}
+            {tags.map((tag) => (
+              <option key={tag.id} value={tag.id}>
+                {tag.name}
+              </option>
+            ))}
+          </select>
+
+          {/* Шаг 8: Состояния загрузки, ошибки и пустого справочника */}
+          {load.status === 'loading' && (
+            <p className="tag-status-text" role="status">
+              ⏳ Загружаем теги…
+            </p>
+          )}
+
+          {load.status === 'error' && (
+            <div className="tag-status-error">
+              <p role="alert">⚠️ {load.message}</p>
+              <button
+                type="button"
+                className="button button-small button-outline"
+                onClick={retry}
+              >
+                🔄 Повторить
+              </button>
+            </div>
+          )}
+
+          {load.status === 'success' && tags.length === 0 && (
+            <div className="tag-status-empty">
+              <p role="status">Тегов пока нет. Сохранение недоступно.</p>
+              <button
+                type="button"
+                className="button button-small button-outline"
+                onClick={retry}
+              >
+                🔄 Повторить
+              </button>
+            </div>
+          )}
+
+          {load.status === 'success' &&
+            tags.length > 0 &&
+            draft.tag !== '' &&
+            !selectedTagExists && (
+              <p className="tag-status-warn" role="alert">
+                Текущий тег «{draft.tag}» отсутствует в справочнике. Пожалуйста, выберите доступный вариант.
+              </p>
+            )}
         </div>
       </div>
 
       <div className="form-group">
         <label htmlFor="task-description" className="form-label">
-          Описание задания {draft.status === 'done' && <span className="required-star">* (для готовой задачи)</span>}
+          Описание задания{' '}
+          {draft.status === 'done' && (
+            <span className="required-star">* (для готовой задачи)</span>
+          )}
         </label>
         <textarea
           id="task-description"
@@ -160,10 +235,18 @@ export function TaskForm(props: TaskFormProps) {
       </div>
 
       <div className="form-actions">
-        <button type="submit" className="button button-primary">
+        <button
+          type="submit"
+          className="button button-primary"
+          disabled={!canSave}
+        >
           Сохранить
         </button>
-        <button type="button" onClick={props.onCancel} className="button button-outline">
+        <button
+          type="button"
+          onClick={props.onCancel}
+          className="button button-outline"
+        >
           Отмена
         </button>
       </div>

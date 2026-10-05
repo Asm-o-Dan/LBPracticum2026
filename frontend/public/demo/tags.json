@@ -1,0 +1,7 @@
+[
+  { "id": "lab", "name": "Лабораторная" },
+  { "id": "practice", "name": "Практика" },
+  { "id": "seminar", "name": "Семинар" },
+  { "id": "coursework", "name": "Курсовая работа" },
+  { "id": "exam", "name": "Экзамен" }
+]

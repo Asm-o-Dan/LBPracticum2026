@@ -9,7 +9,7 @@ export const tasks: Task[] = [
     dueDate: '2026-09-28',
     priority: 'high',
     course: 'Веб-разработка (React & TypeScript)',
-    tag: 'Лабораторная',
+    tag: 'lab',
   },
   {
     id: 't2',
@@ -19,7 +19,7 @@ export const tasks: Task[] = [
     dueDate: '2026-10-05',
     priority: 'medium',
     course: 'Операционные системы',
-    tag: 'Практика',
+    tag: 'practice',
   },
   {
     id: 't3',
@@ -29,7 +29,7 @@ export const tasks: Task[] = [
     dueDate: '2026-09-18',
     priority: 'high',
     course: 'МЗЯП (Ассемблер x86)',
-    tag: 'Лабораторная',
+    tag: 'lab',
   },
   {
     id: 't4',
@@ -39,7 +39,7 @@ export const tasks: Task[] = [
     dueDate: '2026-10-12',
     priority: 'low',
     course: 'Базы данных и СУБД',
-    tag: 'Курсовая работа',
+    tag: 'coursework',
   },
   {
     id: 't5',
@@ -49,6 +49,6 @@ export const tasks: Task[] = [
     dueDate: '2026-10-19',
     priority: 'medium',
     course: 'Компьютерные сети',
-    tag: 'Семинар',
+    tag: 'seminar',
   },
 ]

@@ -684,4 +684,44 @@ button:focus-visible,
   border-radius: 6px;
 }
 
+/* Состояния загрузки сетевого справочника тегов (ЛР 4) */
+.tag-status-text {
+  margin: 6px 0 0;
+  font-size: 13px;
+  color: #0284c7;
+}
+
+.tag-status-error,
+.tag-status-empty {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 6px;
+  padding: 8px 12px;
+  background-color: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 6px;
+  font-size: 13px;
+  color: #b91c1c;
+}
+
+.tag-status-empty {
+  background-color: #fefce8;
+  border-color: #fef08a;
+  color: #854d0e;
+}
+
+.tag-status-warn {
+  margin: 6px 0 0;
+  font-size: 13px;
+  color: #c2410c;
+  background-color: #fff7ed;
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid #ffedd5;
+}
+
+
 

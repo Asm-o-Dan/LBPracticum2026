@@ -54,7 +54,7 @@ export function TaskDetailsPage({ tasks, onDelete }: TaskDetailsPageProps) {
           <span className={`priority-tag priority-${task.priority}`}>
             {priorityLabels[task.priority]}
           </span>
-          <span className="task-tag">{task.tag}</span>
+          <span className="task-tag">Тег: {task.tag}</span>
         </div>
         <h1 className="details-title">{task.title}</h1>
         <p className="details-course">Дисциплина: <strong>{task.course}</strong></p>
@@ -74,8 +74,8 @@ export function TaskDetailsPage({ tasks, onDelete }: TaskDetailsPageProps) {
             <span className="info-value"><code>{task.id}</code></span>
           </div>
           <div className="info-item">
-            <span className="info-label">Категория:</span>
-            <span className="info-value">{task.tag}</span>
+            <span className="info-label">Тег (код справочника):</span>
+            <span className="info-value"><code>{task.tag}</code></span>
           </div>
         </div>
       </div>
