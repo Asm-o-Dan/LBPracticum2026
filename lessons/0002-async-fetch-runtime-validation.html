@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Урок 2: Сетевые запросы, Runtime Type Guards и AbortController</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 40px 20px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Georgia, serif;
+      background: #fafaf9;
+      color: #1c1917;
+      line-height: 1.6;
+    }
+    .wrapper {
+      max-width: 760px;
+      margin: 0 auto;
+      background: #ffffff;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+      border: 1px solid #e7e5e4;
+    }
+    header {
+      border-bottom: 2px solid #0284c7;
+      padding-bottom: 20px;
+      margin-bottom: 30px;
+    }
+    .lesson-meta {
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #0284c7;
+      font-weight: 700;
+    }
+    h1 {
+      font-size: 30px;
+      margin: 8px 0;
+      color: #0c0a09;
+    }
+    h2 {
+      font-size: 20px;
+      margin-top: 32px;
+      color: #0f172a;
+      border-bottom: 1px solid #f1f5f9;
+      padding-bottom: 6px;
+    }
+    p, li {
+      font-size: 16px;
+      color: #334155;
+    }
+    .callout {
+      background: #eff6ff;
+      border-left: 4px solid #0284c7;
+      padding: 16px 20px;
+      border-radius: 0 8px 8px 0;
+      margin: 20px 0;
+    }
+    .code-block {
+      background: #0f172a;
+      color: #f8fafc;
+      padding: 16px;
+      border-radius: 8px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 14px;
+      overflow-x: auto;
+      line-height: 1.5;
+    }
+    .quiz-box {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 24px;
+      margin-top: 32px;
+    }
+    .quiz-q {
+      font-weight: 700;
+      margin-bottom: 14px;
+      color: #0f172a;
+    }
+    .quiz-opt {
+      display: block;
+      margin: 10px 0;
+      padding: 12px 16px;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      cursor: pointer;
+      background: #ffffff;
+      font-size: 14.5px;
+      transition: all 0.2s ease;
+    }
+    .quiz-opt:hover { border-color: #0284c7; background: #f0f9ff; }
+    .quiz-opt.correct { background: #dcfce7; border-color: #22c55e; color: #15803d; font-weight: 600; }
+    .quiz-opt.wrong { background: #fee2e2; border-color: #ef4444; color: #991b1b; }
+    .feedback {
+      margin-top: 14px;
+      font-size: 14px;
+      font-weight: 600;
+      display: none;
+    }
+    .footer-nav {
+      margin-top: 40px;
+      padding-top: 20px;
+      border-top: 1px solid #e2e8f0;
+      display: flex;
+      justify-content: space-between;
+      font-size: 14px;
+    }
+    .footer-nav a { color: #0284c7; text-decoration: none; font-weight: 600; }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <header>
+      <div class="lesson-meta">StudyFlow • Урок 0002 • Модуль: Сеть и Жизненный цикл</div>
+      <h1>Асинхронный Fetch, Runtime Type Guard и AbortController</h1>
+      <p style="margin: 0; color: #64748b;">Как безопасно загружать справочники по HTTP и не ронять React-приложение</p>
+    </header>
+
+    <h2>1. Главное противоречие: TypeScript vs Браузер</h2>
+    <p>
+      Когда вы пишете <code>const tags = (await res.json()) as Tag[]</code>, вы совершаете опасную ошибку. 
+      Компилятор TypeScript существует только во время сборки. В браузере работает обычный JavaScript, который понятия не имеет о типах <code>Tag</code>. Если сервер пришлет ошибку 404, HTML или число вместо строки, программа упадет в белый экран (Uncaught TypeError).
+    </p>
+
+    <div class="callout">
+      <strong>Золотое правило надежности:</strong> Данные, приходящие из внешнего мира (сеть, файлы, ввод пользователя), всегда типизируются как <code>unknown</code> и проверяются во время выполнения через функции-предикаты (Type Guards).
+    </div>
+
+    <div class="code-block">// Предикат типа (User-Defined Type Guard):
+function isTag(value: unknown): value is Tag {
+  if (typeof value !== 'object' || value === null) return false;
+  return (
+    'id' in value && typeof value.id === 'string' &&
+    'name' in value && typeof value.name === 'string'
+  );
+}</div>
+
+    <h2>2. Жизненный цикл и AbortController</h2>
+    <p>
+      Что произойдет, если пользователь на медленном 3G-интернете откроет форму создания задачи, передумает и через 0.2 секунды нажмет «Назад»?
+    </p>
+    <ul>
+      <li>Компонент <code>TaskForm</code> размонтируется и удалится из памяти DOM.</li>
+      <li>Асинхронный промис <code>fetch()</code> продолжит лететь по проводам.</li>
+      <li>Когда ответ наконец вернется, обработчик попытается вызвать <code>setLoad()</code> у мертвого компонента.</li>
+    </ul>
+    <p>
+      Чтобы этого избежать, функция очистки <code>useEffect</code> отменяет запрос:
+    </p>
+
+    <div class="code-block">useEffect(() => {
+  const controller = new AbortController();
+  let active = true;
+
+  getTags(controller.signal)
+    .then((data) => { if (active) setLoad({ status: 'success', data }); })
+    .catch((err) => { if (active) setLoad({ status: 'error', message: err.message }); });
+
+  return () => {
+    active = false;          // Блокируем вызов сеттера
+    controller.abort();      // Физически отменяем HTTP-запрос
+  };
+}, [attempt]);</div>
+
+    <h2>3. Проверка усвоения (Retrieval Practice)</h2>
+    <div class="quiz-box">
+      <div class="quiz-q">Почему после fetch() проверка `if (!response.ok)` строго обязательна?</div>
+      <div class="quiz-opt" onclick="checkAnswer(this, false)">Потому что fetch возвращает HTML, а не строку JSON.</div>
+      <div class="quiz-opt" onclick="checkAnswer(this, true)">Потому что fetch не отклоняет промис при статусах 404 и 500.</div>
+      <div class="quiz-opt" onclick="checkAnswer(this, false)">Потому что без этого Vite заблокирует запросы через CORS.</div>
+      <div class="feedback" id="quiz-fb"></div>
+    </div>
+
+    <div class="footer-nav">
+      <a href="0001-react-vite-ts-lifecycle.html">← Урок 1: Жизненный цикл React</a>
+      <span>StudyFlow Workspace</span>
+    </div>
+  </div>
+
+  <script>
+    function checkAnswer(el, isCorrect) {
+      document.querySelectorAll('.quiz-opt').forEach(opt => opt.classList.remove('correct', 'wrong'));
+      const fb = document.getElementById('quiz-fb');
+      fb.style.display = 'block';
+      if (isCorrect) {
+        el.classList.add('correct');
+        fb.style.color = '#15803d';
+        fb.innerHTML = '✅ Абсолютно верно! fetch отклоняет промис только при падении сети, а ошибки 404/500 требуют проверки response.ok.';
+      } else {
+        el.classList.add('wrong');
+        fb.style.color = '#b91c1c';
+        fb.innerHTML = '❌ Неверно. fetch() считает статусы 404 и 500 успешно завершенным обменом. Проверять response.ok обязательно!';
+      }
+    }
+  </script>
+</body>
+</html>
