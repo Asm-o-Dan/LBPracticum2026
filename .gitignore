@@ -21,3 +21,8 @@ Thumbs.db
 # Storage demo
 tasks-storage.json
 
+# Local agent skills cache
+.agents/
+skills-lock.json
+
+

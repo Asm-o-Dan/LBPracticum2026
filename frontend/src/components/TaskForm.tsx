@@ -173,7 +173,20 @@ export function TaskForm(props: TaskFormProps) {
             ))}
           </select>
 
-          {/* Шаг 8: Состояния загрузки, ошибки и пустого справочника */}
+          {/* Шаг 9 (ЛР 5): Кнопка обновления справочника из Supabase после успеха */}
+          {load.status === 'success' && tags.length > 0 && (
+            <div style={{ marginTop: '8px' }}>
+              <button
+                type="button"
+                className="button button-small button-outline"
+                onClick={retry}
+              >
+                🔄 Обновить справочник
+              </button>
+            </div>
+          )}
+
+          {/* Состояния загрузки, ошибки и пустого справочника */}
           {load.status === 'loading' && (
             <p className="tag-status-text" role="status">
               ⏳ Загружаем теги…
