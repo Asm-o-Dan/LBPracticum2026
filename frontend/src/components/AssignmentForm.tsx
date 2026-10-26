@@ -1,16 +1,16 @@
 import { useState } from 'react'
 import type { FormEvent } from 'react'
 import { useTags } from '../hooks/useTags'
-import type { TaskDraft, TaskPriority, TaskStatus } from '../types/task'
+import type { AssignmentDraft, AssignmentPriority, AssignmentStatus } from '../types/assignment'
 
-type TaskFormProps = {
-  initialValues: TaskDraft
-  onSave: (draft: TaskDraft) => void
+type AssignmentFormProps = {
+  initialValues: AssignmentDraft
+  onSave: (draft: AssignmentDraft) => void
   onCancel: () => void
 }
 
-export function TaskForm(props: TaskFormProps) {
-  const [draft, setDraft] = useState<TaskDraft>(() => ({ ...props.initialValues }))
+export function AssignmentForm(props: AssignmentFormProps) {
+  const [draft, setDraft] = useState<AssignmentDraft>(() => ({ ...props.initialValues }))
   const [error, setError] = useState('')
 
   const { load, retry } = useTags()
@@ -21,7 +21,6 @@ export function TaskForm(props: TaskFormProps) {
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
 
-    // Шаг 9: Защита сохранения
     if (!canSave) {
       setError('Дождитесь справочника и выберите доступный тег.')
       return
@@ -29,19 +28,17 @@ export function TaskForm(props: TaskFormProps) {
 
     const title = draft.title.trim()
     if (title.length < 3 || title.length > 100) {
-      setError('Название должно содержать от 3 до 100 символов.')
+      setError('Название задания должно содержать от 3 до 100 символов.')
       return
     }
 
     if (!draft.dueDate) {
-      setError('Укажите срок сдачи задачи.')
+      setError('Укажите срок сдачи задания.')
       return
     }
 
-    // Предметное правило (Шаг 6 ЛР 3):
-    // Завершённая задача должна иметь непустое описание результата сдачи
     if (draft.status === 'done' && !draft.description.trim()) {
-      setError('Завершённая задача должна иметь непустое описание результата.')
+      setError('Завершённое задание должно иметь непустое описание результата.')
       return
     }
 
@@ -58,26 +55,26 @@ export function TaskForm(props: TaskFormProps) {
       )}
 
       <div className="form-group">
-        <label htmlFor="task-title" className="form-label">
-          Название задачи <span className="required-star">*</span>
+        <label htmlFor="assignment-title" className="form-label">
+          Название задания <span className="required-star">*</span>
         </label>
         <input
-          id="task-title"
+          id="assignment-title"
           className="form-input"
           value={draft.title}
           required
-          placeholder="Например: Лабораторная работа 4"
+          placeholder="Например: Лабораторная работа 5"
           onChange={(e) => setDraft({ ...draft, title: e.target.value })}
         />
       </div>
 
       <div className="form-row">
         <div className="form-group">
-          <label htmlFor="task-course" className="form-label">
+          <label htmlFor="assignment-course" className="form-label">
             Учебная дисциплина
           </label>
           <input
-            id="task-course"
+            id="assignment-course"
             className="form-input"
             value={draft.course}
             placeholder="Например: Веб-разработка"
@@ -86,11 +83,11 @@ export function TaskForm(props: TaskFormProps) {
         </div>
 
         <div className="form-group">
-          <label htmlFor="task-date" className="form-label">
+          <label htmlFor="assignment-date" className="form-label">
             Крайний срок (дедлайн) <span className="required-star">*</span>
           </label>
           <input
-            id="task-date"
+            id="assignment-date"
             type="date"
             className="form-input"
             value={draft.dueDate}
@@ -102,15 +99,15 @@ export function TaskForm(props: TaskFormProps) {
 
       <div className="form-row">
         <div className="form-group">
-          <label htmlFor="task-status" className="form-label">
+          <label htmlFor="assignment-status" className="form-label">
             Статус выполнения
           </label>
           <select
-            id="task-status"
+            id="assignment-status"
             className="form-select"
             value={draft.status}
             onChange={(e) => {
-              const status = e.target.value as TaskStatus
+              const status = e.target.value as AssignmentStatus
               if (status === 'todo' || status === 'in_progress' || status === 'done') {
                 setDraft({ ...draft, status })
               }
@@ -123,15 +120,15 @@ export function TaskForm(props: TaskFormProps) {
         </div>
 
         <div className="form-group">
-          <label htmlFor="task-priority" className="form-label">
-            Приоритет задачи
+          <label htmlFor="assignment-priority" className="form-label">
+            Приоритет
           </label>
           <select
-            id="task-priority"
+            id="assignment-priority"
             className="form-select"
             value={draft.priority}
             onChange={(e) => {
-              const priority = e.target.value as TaskPriority
+              const priority = e.target.value as AssignmentPriority
               if (priority === 'low' || priority === 'medium' || priority === 'high') {
                 setDraft({ ...draft, priority })
               }
@@ -144,11 +141,11 @@ export function TaskForm(props: TaskFormProps) {
         </div>
 
         <div className="form-group">
-          <label htmlFor="task-tag" className="form-label">
+          <label htmlFor="assignment-tag" className="form-label">
             Категория / Тег <span className="required-star">*</span>
           </label>
           <select
-            id="task-tag"
+            id="assignment-tag"
             className="form-select"
             value={draft.tag}
             required
@@ -173,7 +170,7 @@ export function TaskForm(props: TaskFormProps) {
             ))}
           </select>
 
-          {/* Шаг 9 (ЛР 5): Кнопка обновления справочника из Supabase после успеха */}
+          {/* Кнопка обновления справочника из Supabase после успеха */}
           {load.status === 'success' && tags.length > 0 && (
             <div style={{ marginTop: '8px' }}>
               <button
@@ -189,7 +186,7 @@ export function TaskForm(props: TaskFormProps) {
           {/* Состояния загрузки, ошибки и пустого справочника */}
           {load.status === 'loading' && (
             <p className="tag-status-text" role="status">
-              ⏳ Загружаем теги…
+              ⏳ Загружаем теги из базы данных…
             </p>
           )}
 
@@ -231,18 +228,18 @@ export function TaskForm(props: TaskFormProps) {
       </div>
 
       <div className="form-group">
-        <label htmlFor="task-description" className="form-label">
+        <label htmlFor="assignment-description" className="form-label">
           Описание задания{' '}
           {draft.status === 'done' && (
-            <span className="required-star">* (для готовой задачи)</span>
+            <span className="required-star">* (для готовой работы)</span>
           )}
         </label>
         <textarea
-          id="task-description"
+          id="assignment-description"
           className="form-textarea"
           rows={4}
           value={draft.description}
-          placeholder="Опишите требования или результаты выполнения задачи..."
+          placeholder="Опишите требования или результаты выполнения задания..."
           onChange={(e) => setDraft({ ...draft, description: e.target.value })}
         />
       </div>
@@ -253,7 +250,7 @@ export function TaskForm(props: TaskFormProps) {
           className="button button-primary"
           disabled={!canSave}
         >
-          Сохранить
+          Сохранить задание
         </button>
         <button
           type="button"

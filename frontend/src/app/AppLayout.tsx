@@ -14,21 +14,21 @@ export function AppLayout() {
         </p>
         <nav className="app-nav" aria-label="Основная навигация">
           <NavLink
-            to="/tasks"
+            to="/assignments"
             end
             className={({ isActive }) => (isActive ? 'nav-link active' : 'nav-link')}
           >
-            Задачи
+            Задания
           </NavLink>
           <NavLink
-            to="/tasks/new"
+            to="/assignments/new"
             className={({ isActive }) => (isActive ? 'nav-link active' : 'nav-link')}
           >
-            Создать задачу
+            Создать задание
           </NavLink>
         </nav>
         <div className="session-warning" role="status">
-          ℹ️ <strong>Режим сеанса (ЛР 3):</strong> Данные сохраняются в памяти приложения до перезагрузки страницы (F5).
+          ℹ️ <strong>Режим сеанса (ЛР 5):</strong> Справочник тегов загружается из облачной базы <strong>Supabase (PostgreSQL)</strong>. Основные задания сохраняются в памяти приложения до ЛР 6.
         </div>
       </header>
       <main className="app-main">

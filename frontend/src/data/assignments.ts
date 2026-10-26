@@ -1,10 +1,10 @@
-import type { Task } from '../types/task'
+import type { Assignment } from '../types/assignment'
 
-export const tasks: Task[] = [
+export const assignments: Assignment[] = [
   {
-    id: 't1',
+    id: 'a1',
     title: 'Лабораторная работа 2: Навигация и страницы SPA',
-    description: 'Реализовать маршрутизацию React Router, карточки задач, страницу деталей и заглушку создания.',
+    description: 'Реализовать маршрутизацию React Router, карточки заданий, страницу деталей и заглушку создания.',
     status: 'in_progress',
     dueDate: '2026-09-28',
     priority: 'high',
@@ -12,7 +12,7 @@ export const tasks: Task[] = [
     tag: 'lab',
   },
   {
-    id: 't2',
+    id: 'a2',
     title: 'Практикум 1: Системные вызовы и управление процессами',
     description: 'Изучить системные вызовы fork(), exec() и waitpid() в среде Linux для параллельного выполнения задач.',
     status: 'todo',
@@ -22,7 +22,7 @@ export const tasks: Task[] = [
     tag: 'practice',
   },
   {
-    id: 't3',
+    id: 'a3',
     title: 'Лабораторная работа 1: Обработка прерываний BIOS',
     description: 'Написать программу на ассемблере x86 с выводом текстовых сообщений через прерывание INT 10h и обработкой ввода с клавиатуры INT 16h.',
     status: 'done',
@@ -32,7 +32,7 @@ export const tasks: Task[] = [
     tag: 'lab',
   },
   {
-    id: 't4',
+    id: 'a4',
     title: 'Проектирование схемы реляционной базы данных',
     description: 'Построить концептуальную и логическую ER-диаграмму для сущностей учебного расписания и успеваемости.',
     status: 'todo',
@@ -42,7 +42,7 @@ export const tasks: Task[] = [
     tag: 'coursework',
   },
   {
-    id: 't5',
+    id: 'a5',
     title: 'Анализ сетевых пакетов TCP/IP в Wireshark',
     description: 'Перехватить трёхстороннее рукопожатие TCP (SYN, SYN-ACK, ACK) и изучить структуру HTTP/DNS запросов.',
     status: 'in_progress',

@@ -1,54 +1,54 @@
 import { useState } from 'react'
 import { Navigate, Route, Routes } from 'react-router'
 import { AppLayout } from './app/AppLayout'
-import { tasks as initialTasks } from './data/tasks'
-import { EditTaskPage } from './pages/EditTaskPage'
-import { NewTaskPage } from './pages/NewTaskPage'
+import { assignments as initialAssignments } from './data/assignments'
+import { AssignmentsPage } from './pages/AssignmentsPage'
+import { AssignmentDetailsPage } from './pages/AssignmentDetailsPage'
+import { EditAssignmentPage } from './pages/EditAssignmentPage'
+import { NewAssignmentPage } from './pages/NewAssignmentPage'
 import { NotFoundPage } from './pages/NotFoundPage'
-import { TaskDetailsPage } from './pages/TaskDetailsPage'
-import { TasksPage } from './pages/TasksPage'
-import type { Task, TaskDraft } from './types/task'
+import type { Assignment, AssignmentDraft } from './types/assignment'
 import './App.css'
 
 export default function App() {
-  const [tasks, setTasks] = useState<Task[]>(() =>
-    initialTasks.map((task) => ({ ...task }))
+  const [assignments, setAssignments] = useState<Assignment[]>(() =>
+    initialAssignments.map((item) => ({ ...item }))
   )
 
-  function createTask(draft: TaskDraft): string {
+  function createAssignment(draft: AssignmentDraft): string {
     const id = crypto.randomUUID()
-    setTasks((current) => [...current, { ...draft, id }])
+    setAssignments((current) => [...current, { ...draft, id }])
     return id
   }
 
-  function updateTask(id: string, draft: TaskDraft): void {
-    setTasks((current) =>
-      current.map((task) =>
-        task.id === id ? { ...draft, id: task.id } : task
+  function updateAssignment(id: string, draft: AssignmentDraft): void {
+    setAssignments((current) =>
+      current.map((item) =>
+        item.id === id ? { ...draft, id: item.id } : item
       )
     )
   }
 
-  function deleteTask(id: string): void {
-    setTasks((current) => current.filter((task) => task.id !== id))
+  function deleteAssignment(id: string): void {
+    setAssignments((current) => current.filter((item) => item.id !== id))
   }
 
   return (
     <Routes>
       <Route element={<AppLayout />}>
-        <Route index element={<Navigate to="/tasks" replace />} />
-        <Route path="tasks" element={<TasksPage tasks={tasks} />} />
+        <Route index element={<Navigate to="/assignments" replace />} />
+        <Route path="assignments" element={<AssignmentsPage assignments={assignments} />} />
         <Route
-          path="tasks/new"
-          element={<NewTaskPage onCreate={createTask} />}
+          path="assignments/new"
+          element={<NewAssignmentPage onCreate={createAssignment} />}
         />
         <Route
-          path="tasks/:id"
-          element={<TaskDetailsPage tasks={tasks} onDelete={deleteTask} />}
+          path="assignments/:id"
+          element={<AssignmentDetailsPage assignments={assignments} onDelete={deleteAssignment} />}
         />
         <Route
-          path="tasks/:id/edit"
-          element={<EditTaskPage tasks={tasks} onUpdate={updateTask} />}
+          path="assignments/:id/edit"
+          element={<EditAssignmentPage assignments={assignments} onUpdate={updateAssignment} />}
         />
         <Route path="*" element={<NotFoundPage />} />
       </Route>
