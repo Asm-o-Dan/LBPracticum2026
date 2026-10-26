@@ -33,15 +33,11 @@ export default function App() {
     setTasks((current) => current.filter((task) => task.id !== id))
   }
 
-  function restoreTasks(loadedTasks: Task[]): void {
-    setTasks(loadedTasks)
-  }
-
   return (
     <Routes>
       <Route element={<AppLayout />}>
         <Route index element={<Navigate to="/tasks" replace />} />
-        <Route path="tasks" element={<TasksPage tasks={tasks} onRestoreTasks={restoreTasks} />} />
+        <Route path="tasks" element={<TasksPage tasks={tasks} />} />
         <Route
           path="tasks/new"
           element={<NewTaskPage onCreate={createTask} />}
