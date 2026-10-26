@@ -8,8 +8,8 @@ export function NotFoundPage() {
         Запрашиваемый адрес не существует или был перемещен.
       </p>
       <div className="section-actions">
-        <Link to="/tasks" className="button button-primary">
-          ← Вернуться к списку задач
+        <Link to="/assignments" className="button button-primary">
+          ← Вернуться к списку заданий
         </Link>
       </div>
     </section>

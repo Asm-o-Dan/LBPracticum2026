@@ -14,7 +14,7 @@ export const assignments: Assignment[] = [
   {
     id: 'a2',
     title: 'Практикум 1: Системные вызовы и управление процессами',
-    description: 'Изучить системные вызовы fork(), exec() и waitpid() в среде Linux для параллельного выполнения задач.',
+    description: 'Изучить системные вызовы fork(), exec() и waitpid() в среде Linux для параллельного выполнения процессов и потоков.',
     status: 'todo',
     dueDate: '2026-10-05',
     priority: 'medium',
